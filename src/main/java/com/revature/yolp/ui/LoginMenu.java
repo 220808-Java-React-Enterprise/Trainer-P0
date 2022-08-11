@@ -4,9 +4,16 @@ import com.revature.yolp.models.User;
 import com.revature.yolp.services.UserService;
 import com.revature.yolp.utils.custom_exceptions.InvalidUserException;
 
+import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class LoginMenu implements IMenu {
+    private final UserService userService;
+
+    public LoginMenu(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void start() {
@@ -30,6 +37,7 @@ public class LoginMenu implements IMenu {
                         break;
                     case "2":
                         User user = signup();
+                        userService.register(user);
                         new MainMenu(user).start();
                         break;
                     case "x":
@@ -45,13 +53,15 @@ public class LoginMenu implements IMenu {
 
     private void login() {
         System.out.println("\nNeeds implementation...");
+        List<String> usernames = userService.getAllUsernames();
+
+        System.out.println(usernames.contains("bduong0929"));
     }
 
     private User signup() {
         String username = "";
         String password = "";
         User user = new User();
-        UserService userService = new UserService();
         Scanner scan = new Scanner(System.in);
 
         System.out.println("\nCreating account...");
@@ -97,7 +107,7 @@ public class LoginMenu implements IMenu {
 
                        switch (scan.nextLine().toLowerCase()) {
                            case "y":
-                               user = new User(username, password);
+                               user = new User(UUID.randomUUID().toString(), username, password);
                                return user;
                            case "n":
                                System.out.println("\nRestarting...");
