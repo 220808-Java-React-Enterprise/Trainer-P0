@@ -53,15 +53,13 @@ public class LoginMenu implements IMenu {
 
     private void login() {
         System.out.println("\nNeeds implementation...");
-        List<String> usernames = userService.getAllUsernames();
-
-        System.out.println(usernames.contains("bduong0929"));
     }
 
     private User signup() {
         String username = "";
         String password = "";
-        User user = new User();
+        String password2 = "";
+        User user;
         Scanner scan = new Scanner(System.in);
 
         System.out.println("\nCreating account...");
@@ -77,6 +75,7 @@ public class LoginMenu implements IMenu {
 
                         try {
                             userService.isValidUsername(username);
+                            userService.isDuplicateUsername(username);
                             break usernameExit;
                         } catch (InvalidUserException e) {
                             System.out.println(e.getMessage());
@@ -92,6 +91,11 @@ public class LoginMenu implements IMenu {
                             password = scan.nextLine();
 
                             userService.isValidPassword(password);
+
+                            System.out.print("\nRe eneter password: ");
+                            password2 = scan.nextLine();
+
+                            userService.isSamePassword(password, password2);
                             break passwordExit;
                         } catch (InvalidUserException e) {
                             System.out.println(e.getMessage());
