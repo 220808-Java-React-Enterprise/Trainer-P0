@@ -15,6 +15,12 @@ public class UserService {
         userDAO.save(user);
     }
 
+    public User login(String username, String password) {
+        User user = userDAO.getUserByUsernameAndPassword(username, password);
+        if (user == null) throw new InvalidUserException("\nIncorrect username or password :(");
+        return user;
+    }
+
     public boolean isValidUsername(String username) {
         if (!username.matches("^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$")) throw new InvalidUserException("\nInvalid username! username is 8-20 characters long. no _ or . at the beginning. no __ or _. or ._ or .. inside");
         return true;

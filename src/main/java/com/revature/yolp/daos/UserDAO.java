@@ -1,6 +1,7 @@
 package com.revature.yolp.daos;
 
 import com.revature.yolp.models.User;
+import com.revature.yolp.utils.custom_exceptions.InvalidSQLException;
 import com.revature.yolp.utils.database.ConnectionFactory;
 
 import java.sql.Connection;
@@ -21,7 +22,7 @@ public class UserDAO implements CrudDAO<User>{
             ps.setString(4, obj.getRole());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("An error occurred when tyring to save to the database.");
+            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
         }
     }
 
@@ -54,13 +55,24 @@ public class UserDAO implements CrudDAO<User>{
             if (rs.next()) return rs.getString("username");
 
         } catch (SQLException e) {
-            throw new RuntimeException("An error occurred when tyring to save to the database.");
+            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
         }
 
         return null;
     }
 
-    public List<String> getAllUsernames() {
+    public User getUserByUsernameAndPassword(String username, String password) {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) return new User(rs.getString("id"), rs.getString("username"), rs.getString("password"), rs.getString("role"));
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
+        }
+
         return null;
     }
 }

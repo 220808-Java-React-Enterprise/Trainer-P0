@@ -1,5 +1,6 @@
 package com.revature.yolp.ui;
 
+import com.revature.yolp.daos.UserDAO;
 import com.revature.yolp.models.User;
 import com.revature.yolp.services.UserService;
 import com.revature.yolp.utils.custom_exceptions.InvalidUserException;
@@ -38,7 +39,7 @@ public class LoginMenu implements IMenu {
                     case "2":
                         User user = signup();
                         userService.register(user);
-                        new MainMenu(user).start();
+                        new MainMenu(user, new UserService(new UserDAO())).start();
                         break;
                     case "x":
                         System.out.println("\nGoodbye!");
@@ -52,7 +53,30 @@ public class LoginMenu implements IMenu {
     }
 
     private void login() {
-        System.out.println("\nNeeds implementation...");
+        String username = "";
+        String password = "";
+        Scanner scan = new Scanner(System.in);
+
+        System.out.println("\nLogging in...");
+
+        exit: {
+            while (true) {
+                System.out.print("\nEnter username: ");
+                username = scan.nextLine();
+
+                System.out.print("\nEnter password: ");
+                password = scan.nextLine();
+
+                try {
+                    User user = userService.login(username, password);
+                    if (user.getRole().equals("ADMIN")) new AdminMenu(user, new UserService(new UserDAO())).start();
+                    else new MainMenu(user, new UserService(new UserDAO())).start();
+                    break exit;
+                } catch (InvalidUserException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
     }
 
     private User signup() {
