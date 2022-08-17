@@ -3,18 +3,22 @@ package com.revature.yolp.models;
 public class Restaurant {
     private String id;
     private String name;
+    private String street;
     private String city;
     private String state;
+    private String zipcode;
 
     public Restaurant() {
 
     }
 
-    public Restaurant(String id, String name, String city, String state) {
+    public Restaurant(String id, String name, String street, String city, String state, String zipcode) {
         this.id = id;
         this.name = name;
+        this.street = street;
         this.city = city;
         this.state = state;
+        this.zipcode = zipcode;
     }
 
     public String getId() {
@@ -33,6 +37,14 @@ public class Restaurant {
         this.name = name;
     }
 
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
     public String getCity() {
         return city;
     }
@@ -49,13 +61,23 @@ public class Restaurant {
         this.state = state;
     }
 
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
+
     @Override
     public String toString() {
         return "Restaurant{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", street='" + street + '\'' +
                 ", city='" + city + '\'' +
                 ", state='" + state + '\'' +
+                ", zipcode='" + zipcode + '\'' +
                 '}';
     }
 }

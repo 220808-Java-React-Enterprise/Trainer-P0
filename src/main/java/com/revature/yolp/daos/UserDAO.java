@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class UserDAO implements CrudDAO<User>{
+public class UserDAO implements CrudDAO<User> {
 
     @Override
     public void save(User obj) {
@@ -38,6 +38,19 @@ public class UserDAO implements CrudDAO<User>{
 
     @Override
     public User getById(String id) {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE id = ?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new User(rs.getString("id"), rs.getString("username"), rs.getString("password"), rs.getString("role"));
+            }
+
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
+        }
+
         return null;
     }
 
@@ -68,7 +81,8 @@ public class UserDAO implements CrudDAO<User>{
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) return new User(rs.getString("id"), rs.getString("username"), rs.getString("password"), rs.getString("role"));
+            if (rs.next())
+                return new User(rs.getString("id"), rs.getString("username"), rs.getString("password"), rs.getString("role"));
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred when tyring to save to the database.");
         }
